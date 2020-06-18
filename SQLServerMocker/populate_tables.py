@@ -36,3 +36,10 @@ class Controller:
     def __init__(self, db: DataBase, nums_rows: [int]):
         self.db = db
         self.nums_rows = nums_rows
+
+    def has_fk(self, table: Table) -> object:
+        has_fk = False
+        for col in table.columns:
+            if col.foreign_key != "None":
+                has_fk = True
+        return has_fk
