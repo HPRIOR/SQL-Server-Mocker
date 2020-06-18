@@ -16,7 +16,7 @@ def get_json(json_file) -> dict:
 
 
 class Column:
-    def __init__(self, name: str, primary_key: bool, foreign_key: bool, not_null: bool, data_type: str):
+    def __init__(self, name: str, primary_key: bool, foreign_key: str, not_null: bool, data_type: str):
         self.name = name
         self.primary_key = primary_key
         self.foreign_key = foreign_key
@@ -38,22 +38,22 @@ class Column:
 
 class Table:
     def __init__(self, table_name: str, columns: [Column]):
-        self.table_name = table_name
+        self.name = table_name
         self.columns = columns
 
     def __str__(self):
-        return f"Table: {self.table_name} \n" \
+        return f"Table: {self.name} \n" \
                f" Columns {[c.name for c in self.columns]} \n"
 
 
 class DataBase:
     def __init__(self, db_name: str, tables: [Table]):
-        self.db_name = db_name
+        self.name = db_name
         self.tables = tables
 
     def __str__(self):
-        return f"Database name: {self.db_name} \n " \
-               f"Tables: {[t.table_name for t in self.tables]} \n"
+        return f"Database name: {self.name} \n " \
+               f"Tables: {[t.name for t in self.tables]} \n"
 
 
 class CreateDataBase:
@@ -70,10 +70,7 @@ class CreateDataBase:
                 for t in self.db_dict["database"]]
 
     def get_db(self) -> DataBase:
-        return DataBase(self.get_db_name(), self.get_tables())
-
-    def get_db_name(self) -> str:
-        return self.db_dict['db_name']
+        return DataBase(self.db_dict['db_name'], self.get_tables())
 
 
-debug_db("..\json_tables\\test_table.json", get_json)
+# debug_db("..\json_tables\\test_table.json", get_json)
