@@ -8,9 +8,6 @@ def get_json(json_file) -> dict:
 
 d = get_json("..\json_tables\\test_table.json")
 
-
-# print(d)
-
 class Column:
     def __init__(self, name: str, primary_key: bool, foreign_key: bool, not_null: bool, data_type: str):
         self.name = name
@@ -26,11 +23,19 @@ class Column:
         else:
             return "VARCHAR(100)"
 
+    def __str__(self):
+        return f"column name: {self.name} \n primary key: {self.primary_key} \n" \
+               f" foreign key: {self.foreign_key} \n not null: {self.not_null} \n " \
+               f"original data type: {self.data_type_original} \n db data type: {self.data_type} \n"
+
 
 class Table:
     def __init__(self, table_name: str, columns: [Column]):
         self.table_name = table_name
         self.columns = columns
+
+    def __str__(self):
+        return f"{self.table_name}: {[c.name for c in self.columns]} \n"
 
 
 class DataBase:
@@ -38,27 +43,33 @@ class DataBase:
         self.db_name = db_name
         self.tables = tables
 
+    def __str__(self):
+        return f"{self.db_name}: {[t.table_name for t in self.tables]}"
 
-class GetDataBase:
+
+class CreateDataBase:
     def __init__(self, dictionary: dict):
-        self.dictionary = dictionary
+        self.db_dict = dictionary
         self.db = self.get_db()
 
     def get_columns(self, columns: [dict]) -> [Column]:
-        return [Column(column['name'], column['primary_key'], column['foreign_key'], column['not_null'],
-                       column['data_type']) for column in columns]
+        return [Column(c['name'], c['primary_key'], c['foreign_key'], c['not_null'],
+                       c['data_type']) for c in columns]
 
     def get_tables(self) -> [Table]:
-        return [Table([val for val in table][0], self.get_columns(table['columns']))
-                for table in self.dictionary[self.get_db_name()]]
+        return [Table(t['table_name'], self.get_columns(t['columns']))
+                for t in self.db_dict[self.get_db_name()]]
 
     def get_db(self) -> DataBase:
         return DataBase(self.get_db_name(), self.get_tables())
 
     def get_db_name(self) -> str:
-        return [(key, value) for key, value in self.dictionary.items()][0][0]
+        return [(key, value) for key, value in self.db_dict.items()][0][0]
 
 
-db = GetDataBase(d)
-
+db = CreateDataBase(d).get_db()
 print(db)
+for table in db.tables:
+    print(table)
+    for column in table.columns:
+        print(column)
