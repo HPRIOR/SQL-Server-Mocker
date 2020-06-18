@@ -16,7 +16,7 @@
           "primary_key": false,
           "foreign_key": "None",
           "not_null": false,
-          "data_type": "string"
+          "data_type": "int"
         },
         {
           "name": "column_3",
