@@ -1,7 +1,8 @@
 import json
 
 
-def debug_db(file_name, get_dict):
+def debug_db(file_name, get_dict) -> None:
+    """Prints outline of the database"""
     db = CreateDataBase(get_dict(file_name)).get_db()
     print(db)
     for table in db.tables:
@@ -25,6 +26,10 @@ class Column:
         self.data_type = self.convert_data_type()
 
     def convert_data_type(self):
+        """
+        converts data type into a type for SQL server - allows for the naming of types
+        by Generators
+        """
         if self.data_type_original in "int" or self.data_type_original in "intsmall" or self.data_type_original in "year" or self.data_type_original in "intEvenSmaller":
             return "INT"
         else:
@@ -67,7 +72,7 @@ class CreateDataBase:
 
     def get_tables(self) -> [Table]:
         return [Table(t['table_name'], self.get_columns(t['columns']))
-                for t in self.db_dict["database"]]
+                for t in self.db_dict["tables"]]
 
     def get_db(self) -> DataBase:
         return DataBase(self.db_dict['db_name'], self.get_tables())

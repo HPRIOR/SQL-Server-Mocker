@@ -35,6 +35,12 @@ def test_string_builder():
               "test_db.dbo.test_table_2 (\ncolumn_4 VARCHAR(100),\ncolumn_5 VARCHAR(100),\ncolumn_6 " \
               "VARCHAR(100),\nFOREIGN KEY (column_4) REFERENCES test_db.dbo.test_table_1 (column_4)," \
               "\nPRIMARY KEY (column_4, column_5)\n);\n"
+    assert CreateTable(db_reverse).string_builder() \
+           == "CREATE TABLE test_db.dbo.test_table_1 (\ncolumn_1 VARCHAR(100),\ncolumn_2 INT," \
+              "\ncolumn_3 VARCHAR(100) NOT NULL,\nPRIMARY KEY (column_1)\n);\n \nCREATE TABLE " \
+              "test_db.dbo.test_table_2 (\ncolumn_4 VARCHAR(100),\ncolumn_5 VARCHAR(100),\ncolumn_6 " \
+              "VARCHAR(100),\nFOREIGN KEY (column_4) REFERENCES test_db.dbo.test_table_1 (column_4)," \
+              "\nPRIMARY KEY (column_4, column_5)\n);\n"
 
 
 

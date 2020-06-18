@@ -52,9 +52,6 @@ class CreateTable:
                 sorted_tables.append(table)
         return sorted_tables
 
-    # add logic to govern the order of create tables (e.g. those with foreign keys are made last)
-    # sort tables by foreign key, then iterate through that list
-
 
 c = CreateTable(CreateDataBase(get_json("..\json_tables\\test_table.json")).get_db())
 

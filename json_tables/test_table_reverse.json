@@ -1,6 +1,6 @@
 {
   "db_name": "test_db",
-  "database": [
+  "tables": [
     {
     "table_name": "test_table_2",
     "columns": [
