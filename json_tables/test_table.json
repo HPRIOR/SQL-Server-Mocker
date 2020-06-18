@@ -1,4 +1,5 @@
 {
+  "db_name": "test_db",
   "database": [
     {
     "table_name": "test_table_1",

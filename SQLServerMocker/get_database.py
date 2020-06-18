@@ -1,12 +1,19 @@
 import json
 
 
+def debug_db(file_name, get_dict):
+    db = CreateDataBase(get_dict(file_name)).get_db()
+    print(db)
+    for table in db.tables:
+        print(table)
+        for column in table.columns:
+            print(column)
+
+
 def get_json(json_file) -> dict:
     with open(json_file) as tables:
         return json.load(tables)
 
-
-d = get_json("..\json_tables\\test_table.json")
 
 class Column:
     def __init__(self, name: str, primary_key: bool, foreign_key: bool, not_null: bool, data_type: str):
@@ -24,7 +31,7 @@ class Column:
             return "VARCHAR(100)"
 
     def __str__(self):
-        return f"column name: {self.name} \n primary key: {self.primary_key} \n" \
+        return f"Column: {self.name} \n primary key: {self.primary_key} \n" \
                f" foreign key: {self.foreign_key} \n not null: {self.not_null} \n " \
                f"original data type: {self.data_type_original} \n db data type: {self.data_type} \n"
 
@@ -35,7 +42,8 @@ class Table:
         self.columns = columns
 
     def __str__(self):
-        return f"{self.table_name}: {[c.name for c in self.columns]} \n"
+        return f"Table: {self.table_name} \n" \
+               f" Columns {[c.name for c in self.columns]} \n"
 
 
 class DataBase:
@@ -44,7 +52,8 @@ class DataBase:
         self.tables = tables
 
     def __str__(self):
-        return f"{self.db_name}: {[t.table_name for t in self.tables]}"
+        return f"Database name: {self.db_name} \n " \
+               f"Tables: {[t.table_name for t in self.tables]} \n"
 
 
 class CreateDataBase:
@@ -58,18 +67,13 @@ class CreateDataBase:
 
     def get_tables(self) -> [Table]:
         return [Table(t['table_name'], self.get_columns(t['columns']))
-                for t in self.db_dict[self.get_db_name()]]
+                for t in self.db_dict["database"]]
 
     def get_db(self) -> DataBase:
         return DataBase(self.get_db_name(), self.get_tables())
 
     def get_db_name(self) -> str:
-        return [(key, value) for key, value in self.db_dict.items()][0][0]
+        return self.db_dict['db_name']
 
 
-db = CreateDataBase(d).get_db()
-print(db)
-for table in db.tables:
-    print(table)
-    for column in table.columns:
-        print(column)
+debug_db("..\json_tables\\test_table.json", get_json)
