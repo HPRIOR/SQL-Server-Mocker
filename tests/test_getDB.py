@@ -31,3 +31,5 @@ def test_convert_data_type():
     assert c.convert_data_type() == "INT"
     c = Column("test", True, "None", False, "random")
     assert c.convert_data_type() == "VARCHAR(100)"
+
+
