@@ -73,7 +73,8 @@ class PopulateTable:
 
     def has_col_in_ref_dict(self, table: Table) -> bool:
         """returns true if every foreign key the table has a match in the reference dictionary"""
-        _ = [True if col.foreign_key != "None" and col.name in self.ref_dict.dict
+        # fix test.json
+        _ = [True if col.name in self.ref_dict.dict
              else False for col in [col for col in table.columns if col.foreign_key != "None"]]
         return not False in _
 
