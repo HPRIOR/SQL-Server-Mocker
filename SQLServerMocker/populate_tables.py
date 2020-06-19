@@ -22,18 +22,16 @@ class PopulateTable:
 
     def build_no_fk(self, tables: [Table]) -> str:
         _ = " "
-        for enum, tables in enumerate(tables):
-            _ += self.table_string_builder(tables, self.get_generator_array(tables, self.ref_dict), self.nums_rows[enum])
+        for enum, table in enumerate(tables):
+            _ += self.table_string_builder(table, self.get_generator_array(table, self.ref_dict), self.nums_rows[enum])
             return _
 
     def build_fk(self, tables: [Table]) -> str:
         _ = ""
         while len(tables) > 0:
-            print("hllo")
             for enum, table in enumerate(tables):
-                print(self.ref_dict.dict)
                 if self.has_col_in_ref_dict(table):
-                    _ += self.table_string_builder(tables, self.get_generator_array(tables, self.ref_dict), self.nums_rows[enum])
+                    _ += self.table_string_builder(table, self.get_generator_array(table, self.ref_dict), self.nums_rows[enum])
                     tables.remove(table)
         return _
 
@@ -73,7 +71,6 @@ class PopulateTable:
 
     def has_col_in_ref_dict(self, table: Table) -> bool:
         """returns true if every foreign key the table has a match in the reference dictionary"""
-        # fix test.json
         _ = [True if col.name in self.ref_dict.dict
              else False for col in [col for col in table.columns if col.foreign_key != "None"]]
         return not False in _
@@ -87,7 +84,7 @@ class PopulateTable:
         return has_fk
 
 
-d = CreateDataBase(get_json("..\json_tables\\test_table.json")).get_db()
+d = CreateDataBase(get_json("..\json_tables\\test_foreign_key.json")).get_db()
 
 rows = [10, 5]
 
