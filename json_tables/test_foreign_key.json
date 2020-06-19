@@ -12,9 +12,9 @@
           "data_type": "string"
         },
         {
-          "name": "column_2",
+          "name": "column_5",
           "primary_key": false,
-          "foreign_key": "None",
+          "foreign_key": "test_table_2",
           "not_null": false,
           "data_type": "int"
         },
@@ -34,7 +34,7 @@
         {
           "name": "column_1",
           "primary_key": true,
-          "foreign_key": "test_table_1",
+          "foreign_key": "None",
           "not_null": false,
           "data_type": "string"
         },

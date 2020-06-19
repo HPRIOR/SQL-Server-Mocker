@@ -2,9 +2,9 @@ from SQLServerMocker.get_database import *
 from SQLServerMocker.generators import *
 
 
-class PopulateTable:
+class PopulateTables:
     """
-    generates string to populate table
+    generates strings to populate tables
     """
     def __init__(self, db: DataBase):
         self.db = db
@@ -15,8 +15,8 @@ class PopulateTable:
         """Builds string of tables without foreign keys first, then those with foreign keys -
         ensures foreign key references in ref_dict"""
         _ = ""
-        _ += self.build_no_fk([table for table in self.db.tables if not self.has_fk(table)])
-        _ += self.build_fk([table for table in self.db.tables if self.has_fk(table)])
+        _ += str(self.build_no_fk([table for table in self.db.tables if not self.has_fk(table)]))
+        _ += str(self.build_fk([table for table in self.db.tables if self.has_fk(table)]))
         return _
 
     def build_no_fk(self, tables: [Table]) -> str:
@@ -85,6 +85,6 @@ class PopulateTable:
 d = CreateDataBase(get_json("..\json_tables\\test_foreign_key.json")).get_db()
 
 
-p = PopulateTable(d)
+p = PopulateTables(d)
 
 print(p.db_string_builder())
