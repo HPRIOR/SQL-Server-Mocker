@@ -29,7 +29,7 @@ class GenerateID(Generator):
         return r_val
 
 
-class GenerateDate(ABC):
+class GenerateDate(Generator):
     def __init__(self):
         self.current = 1
 
@@ -45,15 +45,15 @@ class GenerateDate(ABC):
         return str(random.randint(1, 30))
 
 
-class GenerateRandomInt(ABC):
+class GenerateRandomInt(Generator):
     def __init__(self, rng):
-        self.range = rng
+        self.rng = rng
 
     def next(self) -> str:
         return random.randint(1, self.rng)
 
 
-class GenerateRandomStringCollection(ABC):
+class GenerateRandomStringCollection(Generator):
     """
     range specifies length of string, string should be a comma seperated list of items
     """
@@ -85,7 +85,7 @@ class ReferenceDict:
         self.dict[column_key].append(value)
 
 
-class FKValueGenerator(ABC):
+class FKValueGenerator(Generator):
     """
     gives random values from the reference Dict
     """
@@ -98,13 +98,13 @@ class FKValueGenerator(ABC):
         if self.index < len(self.values) - 1:
             _ = self.values[self.rand_seq[self.index]]
             self.index += 1
-            return "\'" + _ + "\'"
+            return _
         else:
             self.index = 0
             self.rand_seq = random.sample(range(0, len(self.values)), len(self.values))
             _ = self.values[self.rand_seq[self.index]]
             self.index += 1
-            return "\'" + _ + "\'"
+            return _
 
 
 
