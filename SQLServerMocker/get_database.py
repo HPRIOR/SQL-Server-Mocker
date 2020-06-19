@@ -42,9 +42,10 @@ class Column:
 
 
 class Table:
-    def __init__(self, table_name: str, columns: [Column]):
+    def __init__(self, table_name: str, columns: [Column], rows: int):
         self.name = table_name
         self.columns = columns
+        self.rows = rows
 
     def __str__(self):
         return f"Table: {self.name} \n" \
@@ -71,7 +72,7 @@ class CreateDataBase:
                        c['data_type']) for c in columns]
 
     def get_tables(self) -> [Table]:
-        return [Table(t['table_name'], self.get_columns(t['columns']))
+        return [Table(t['table_name'], self.get_columns(t['columns']), t['rows'])
                 for t in self.db_dict["tables"]]
 
     def get_db(self) -> DataBase:

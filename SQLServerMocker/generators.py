@@ -95,11 +95,11 @@ class FKValueGenerator(Generator):
         self.index = 0
 
     def next(self) -> str:
-        if self.index < len(self.values) - 1:
+        try:
             _ = self.values[self.rand_seq[self.index]]
             self.index += 1
             return _
-        else:
+        except IndexError:
             self.index = 0
             self.rand_seq = random.sample(range(0, len(self.values)), len(self.values))
             _ = self.values[self.rand_seq[self.index]]

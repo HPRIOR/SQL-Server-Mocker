@@ -25,7 +25,8 @@
           "not_null": true,
           "data_type": "string"
         }
-      ]
+      ],
+      "rows": 10
     },
     {
     "table_name": "test_table_2",
@@ -51,7 +52,8 @@
           "not_null": false,
           "data_type": "string"
         }
-      ]
+      ],
+      "rows": 10
     }
   ]
 }

@@ -6,39 +6,37 @@ class PopulateTable:
     """
     generates string to populate table
     """
-
-    def __init__(self, db: DataBase, nums_rows: [int]):
+    def __init__(self, db: DataBase):
         self.db = db
-        self.nums_rows = nums_rows
         self.ref_dict = ReferenceDict()
         self.gen_dict = get_gen_dict()
 
     def db_string_builder(self):
-        """does foreign keys first, then loop until each table has a foreign key match in ref dict """
+        """Builds string of tables without foreign keys first, then those with foreign keys -
+        ensures foreign key references in ref_dict"""
         _ = ""
         _ += self.build_no_fk([table for table in self.db.tables if not self.has_fk(table)])
         _ += self.build_fk([table for table in self.db.tables if self.has_fk(table)])
         return _
 
     def build_no_fk(self, tables: [Table]) -> str:
-        _ = " "
-        for enum, table in enumerate(tables):
-            _ += self.table_string_builder(table, self.get_generator_array(table, self.ref_dict), self.nums_rows[enum])
+        _ = ""
+        for table in tables:
+            _ += self.table_string_builder(table, self.get_generator_array(table, self.ref_dict), table.rows)
             return _
 
     def build_fk(self, tables: [Table]) -> str:
         _ = ""
         while len(tables) > 0:
-            for enum, table in enumerate(tables):
+            for table in tables:
                 if self.has_col_in_ref_dict(table):
-                    _ += self.table_string_builder(table, self.get_generator_array(table, self.ref_dict), self.nums_rows[enum])
+                    _ += self.table_string_builder(table, self.get_generator_array(table, self.ref_dict), table.rows)
                     tables.remove(table)
         return _
 
     def table_string_builder(self, table: Table, generators: [Generator], num_rows: int) -> str:
         col_names = [col.name for col in table.columns]
-        s = ""
-        s += f"INSERT into {self.db.name}.dbo.{table.name} ({', '.join([col.name for col in table.columns])})\n"
+        s = f"INSERT into {self.db.name}.dbo.{table.name} ({', '.join([col.name for col in table.columns])})\n"
         s += "VALUES\n"
         for i in range(num_rows):
             s += "("
@@ -86,8 +84,7 @@ class PopulateTable:
 
 d = CreateDataBase(get_json("..\json_tables\\test_foreign_key.json")).get_db()
 
-rows = [10, 5]
 
-p = PopulateTable(d, rows)
+p = PopulateTable(d)
 
 print(p.db_string_builder())
