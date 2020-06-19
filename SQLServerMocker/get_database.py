@@ -22,7 +22,7 @@ class Column:
         self.primary_key = primary_key
         self.foreign_key = foreign_key
         self.not_null = not_null
-        self.data_type_original = data_type
+        self.data_type_og = data_type
         self.data_type = self.convert_data_type()
 
     def convert_data_type(self):
@@ -30,7 +30,7 @@ class Column:
         converts data type into a type for SQL server - allows for the naming of types
         by Generators
         """
-        if self.data_type_original in "int" or self.data_type_original in "intsmall" or self.data_type_original in "year" or self.data_type_original in "intEvenSmaller":
+        if self.data_type_og in "int" or self.data_type_og in "intsmall" or self.data_type_og in "year" or self.data_type_og in "intEvenSmaller":
             return "INT"
         else:
             return "VARCHAR(100)"
@@ -38,7 +38,7 @@ class Column:
     def __str__(self):
         return f"Column: {self.name} \n primary key: {self.primary_key} \n" \
                f" foreign key: {self.foreign_key} \n not null: {self.not_null} \n " \
-               f"original data type: {self.data_type_original} \n db data type: {self.data_type} \n"
+               f"original data type: {self.data_type_og} \n db data type: {self.data_type} \n"
 
 
 class Table:
