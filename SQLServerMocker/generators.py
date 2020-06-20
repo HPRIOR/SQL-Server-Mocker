@@ -55,7 +55,7 @@ class GenerateRandomInt(Generator):
 
 class GenerateRandomStringCollection(Generator):
     """
-    range specifies length of string, string should be a comma seperated list of items
+    range specifies length of string, string should be a comma separated list of items
     """
 
     def __init__(self, string, range):
