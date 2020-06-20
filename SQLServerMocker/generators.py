@@ -85,7 +85,7 @@ class ReferenceDict:
         self.dict[column_key].append(value)
 
 
-class PKValueGenerator(Generator):
+class ReferencedValueGenerator(Generator):
     def __init__(self, values: list):
         self.values = values
         self.index = 0
