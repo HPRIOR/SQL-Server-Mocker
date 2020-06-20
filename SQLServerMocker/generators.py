@@ -58,9 +58,9 @@ class GenerateRandomStringCollection(Generator):
     range specifies length of string, string should be a comma separated list of items
     """
 
-    def __init__(self, string, range):
+    def __init__(self, string, rng):
         self.letters = string.split(', ')
-        self.range = range
+        self.range = rng
 
     def next(self) -> str:
         s = ""
@@ -85,10 +85,22 @@ class ReferenceDict:
         self.dict[column_key].append(value)
 
 
+class PKValueGenerator(Generator):
+    def __init__(self, values: list):
+        self.values = values
+        self.index = 0
+
+    def next(self) -> str:
+        _ = self.values[self.index]
+        self.index += 1
+        return _
+
+
 class FKValueGenerator(Generator):
     """
     gives random values from the reference Dict
     """
+
     def __init__(self, values: list):
         self.values = values
         self.rand_seq = random.sample(range(0, len(values)), len(values))
@@ -105,10 +117,3 @@ class FKValueGenerator(Generator):
             _ = self.values[self.rand_seq[self.index]]
             self.index += 1
             return _
-
-
-
-
-
-
-
