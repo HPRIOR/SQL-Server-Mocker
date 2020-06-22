@@ -24,7 +24,7 @@ class GenerateID(Generator):
         self.iter = 0
 
     def next(self) -> str:
-        r_val = f"'{self.col_name}_{self.iter}'"
+        r_val = f"'{self.col_name[:3]}_{self.iter}'"
         self.iter += 1
         return r_val
 

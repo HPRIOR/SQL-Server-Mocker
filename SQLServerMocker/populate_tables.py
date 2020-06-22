@@ -14,35 +14,39 @@ class PopulateTables:
         self.ref_dict = self.populate_ref_dict(self.tables, self.fk_references(self.tables, self.has_fk),
                                                self.get_generator)
 
-    def db_string_builder(self):
-        return "\n".join([self.table_string_builder(table, self.get_gen_array(table, self.ref_dict))
-                         for table in self.tables])
+    def db_string_builder(self) -> str:
+        """applies table_string_builder to each table and concatenates the resulting string"""
+        return "\n".join([self.table_string_builder(table, self.get_gen_array(table, self.ref_dict, self.get_generator),
+                                                    self.db.name)
+                          for table in self.tables])
 
-    def table_string_builder(self, table: Table, generators: [Generator]) -> str:
-        s = f"INSERT into {self.db.name}.dbo.{table.name} ({', '.join([col.name for col in table.columns])})\n"
+    def table_string_builder(self, table: Table, generators: [Generator], db_name: str) -> str:
+        """Gets values from the supplied generators for each column within a table"""
+        s = f"INSERT into {db_name}.dbo.{table.name} ({', '.join([col.name for col in table.columns])})\n"
         s += "VALUES\n"
         for i in range(table.rows):
-            s += "("
-            s += ", ".join([str(gen.next()) for gen in generators])
-            s += ")\n"
+            s += "(" + ", ".join([str(gen.next()) for gen in generators])
+            s += "),\n" if i < table.rows - 1 else ")\n"
         return s
 
-    def get_gen_array(self, table: Table, ref_dict: ReferenceDict) -> [Generator]:
+    def get_gen_array(self, table: Table, ref_dict: ReferenceDict, get_gen) -> [Generator]:
+        """
+        Contains the logic for getting array of generators: namely, getting generators for
+        foreign keys (both referring and referenced)
+        """
         gens = []
         for col in table.columns:
             if col.foreign_key != "None":
                 gens.append(FKValueGenerator(ref_dict.dict[col.foreign_key][col.name]))
             elif table.name in ref_dict.dict and col.name in ref_dict.dict[table.name]:
-                    gens.append(ValueGenerator(ref_dict.dict[table.name][col.name]))
+                gens.append(ValueGenerator(ref_dict.dict[table.name][col.name]))
             else:
-                gens.append(self.get_generator(col, get_gen_dict()))
+                gens.append(get_gen(col, get_gen_dict()))
         return gens
 
     def get_generator(self, col: Column, gen_dict: dict):
-        if col.data_type == "id":
-            return GenerateID(col.name)
-        else:
-            return gen_dict[col.data_type_og]
+        """ will return appropriate generator based on the data_type of column"""
+        return GenerateID(col.name) if col.data_type_og == "id" else gen_dict[col.data_type_og]
 
     def fk_references(self, tables: [Table], has_fk) -> [str, str]:
         """returns col_names and table references for foreign key columns"""
@@ -51,7 +55,6 @@ class PopulateTables:
             for col in table.columns:
                 if col.foreign_key != "None":
                     fk_ref.append((col.name, col.foreign_key))
-        print(fk_ref)
         return fk_ref
 
     def populate_ref_dict(self, tables: [Table], fk_refs: [str, str], get_generator):
@@ -64,7 +67,6 @@ class PopulateTables:
                         gen = get_generator(col, get_gen_dict())
                         for i in range(table.rows):
                             r_dict.populate_table_refs(table.name, col.name, gen.next())
-        print(r_dict.dict)
         return r_dict
 
     def has_fk(self, table: Table) -> bool:

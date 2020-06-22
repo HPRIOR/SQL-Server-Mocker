@@ -9,7 +9,7 @@
           "primary_key": true,
           "foreign_key": "None",
           "not_null": false,
-          "data_type": "string"
+          "data_type": "id"
         },
         {
           "name": "column_5",
@@ -51,6 +51,13 @@
           "foreign_key": "None",
           "not_null": false,
           "data_type": "string"
+        },
+        {
+            "name": "column_7",
+            "primary_key": false,
+            "foreign_key": "None",
+            "not_null": false,
+            "data_type": "int"
         }
       ],
       "rows": 10
