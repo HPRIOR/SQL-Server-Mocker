@@ -4,7 +4,7 @@ from SQLServerMocker.generators import *
 
 class PopulateTables:
     """
-    generates strings to populate tables
+    generates string to populate tables
     """
 
     def __init__(self, db: DataBase):
