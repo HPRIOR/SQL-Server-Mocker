@@ -74,7 +74,7 @@ class ReferenceDict:
     """
     contains dictionary:
     {referenced table} -> {column name} -> {list of values}
-    this is used to create value generators for fk and referenced columns
+    Used to create value generators for fk referencing and fk referenced columns
     """
 
     def __init__(self):
