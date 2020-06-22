@@ -30,7 +30,7 @@ class Column:
         converts data type into a type for SQL server - allows for the naming of types
         by Generators
         """
-        if self.data_type_og in "int" or self.data_type_og in "intsmall" or self.data_type_og in "year" or self.data_type_og in "intEvenSmaller":
+        if self.data_type_og in ["intsmall", "int", "year", "intEvenSmaller"]:
             return "INT"
         else:
             return "VARCHAR(100)"

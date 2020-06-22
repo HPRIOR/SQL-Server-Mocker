@@ -25,22 +25,25 @@ class PopulateTables:
         s = f"INSERT into {db_name}.dbo.{table.name} ({', '.join([col.name for col in table.columns])})\n"
         s += "VALUES\n"
         for i in range(table.rows):
-            s += "(" + ", ".join([str(gen.next()) for gen in generators])
+            s += "(" + ", ".join([str(generator.next()) for generator in generators])
             s += "),\n" if i < table.rows - 1 else ")\n"
         return s
 
     def get_gen_array(self, table: Table, ref_dict: ReferenceDict, get_gen) -> [Generator]:
         """
-        Contains the logic for getting array of generators: namely, getting generators for
-        foreign keys (both referring and referenced)
+        Contains the logic for getting array of generators:
+        namely, for columns referring to and being referenced as foreign keys)
         """
         gens = []
         for col in table.columns:
             if col.foreign_key != "None":
+                # columns referring to foreign keys
                 gens.append(FKValueGenerator(ref_dict.dict[col.foreign_key][col.name]))
             elif table.name in ref_dict.dict and col.name in ref_dict.dict[table.name]:
+                # columns being referenced as foreign keys
                 gens.append(ValueGenerator(ref_dict.dict[table.name][col.name]))
             else:
+                # columns without foreign key relations
                 gens.append(get_gen(col, get_gen_dict()))
         return gens
 
