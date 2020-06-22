@@ -73,19 +73,20 @@ class GenerateRandomStringCollection(Generator):
 class ReferenceDict:
     """
     contains dictionary:
-    key = column reference which has already been created
-    value = values which have been created for that column reference
-    this is used to create FKValueGenerators
+    {referenced table} -> {column name} -> {list of values}
+    this is used to create value generators for fk and referenced columns
     """
 
     def __init__(self):
-        self.dict = defaultdict(list)
+        self.dict = {}
 
-    def populate_dict(self, column_key, value):
-        self.dict[column_key].append(value)
+    def populate_table_refs(self, table_name: str, column_key: str, value):
+        if table_name not in self.dict:
+            self.dict[table_name] = defaultdict(list)
+        self.dict[table_name][column_key].append(value)
 
 
-class PKValueGenerator(Generator):
+class ValueGenerator(Generator):
     def __init__(self, values: list):
         self.values = values
         self.index = 0
