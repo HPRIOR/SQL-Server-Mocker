@@ -19,10 +19,12 @@ class DKMString(StrToDbInfo):
     def table_strings(self, inp: str) -> [str]:
         return [s for s in inp.split("\n")]
 
-    def table_dict(self, t_str: str) -> dict:
-        return {
-            t_str.split(" ")[0].strip(): [s.strip() for s in t_str[t_str.find("(") + 1: t_str[1].find(")")].split(", ")]
-        }
+    def table_dict(self, t_str: str) -> tuple:
+        return (
+            t_str.split(" ")[0].strip(), [s.strip() for s in t_str[t_str.find("(") + 1: t_str[1].find(")")].split(", ")]
+        )
 
     def table_list(self) -> [dict]:
         return [self.table_dict(t_str) for t_str in self.table_strings(self.db_string)]
+
+

@@ -20,12 +20,11 @@ def test_table_strings():
 
 
 def test_table_dict():
-    assert dkm_str.table_dict(dkm_str.table_strings(s)[0]) == {"LOCATION": ["LOC_ID", "LOC_NAME", "LOC_CITY"]}
+    assert dkm_str.table_dict(dkm_str.table_strings(s)[0]) == ("LOCATION", ["LOC_ID", "LOC_NAME", "LOC_CITY"])
 
 
 def test_table_list():
-    assert dkm_str.table_list() == [{"LOCATION": ["LOC_ID", "LOC_NAME", "LOC_CITY"]},
-                             {"CAR": ["CAR_ID", "CAR_CATEGORY", "CAR_MAKE", "CAR_MODEL", "LOC_ID"]},
-                             {"CUSTOMER": ["CUST_ID", "CUST_NAME", "CUST_CONTACT_NO"]},
-                             {"CAR_HIRE": ["HIRE_ID", "CAR_ID", "CUST_ID", "START_DATE", "START_MILEAGE", "END_DATE",
-                                           "END_MILEAGE"]}]
+    assert dkm_str.table_list() == [("LOCATION", ["LOC_ID", "LOC_NAME", "LOC_CITY"]),
+                                    ("CAR", ["CAR_ID", "CAR_CATEGORY", "CAR_MAKE", "CAR_MODEL", "LOC_ID"]),
+                                    ("CUSTOMER", ["CUST_ID", "CUST_NAME", "CUST_CONTACT_NO"]),
+                                    ("CAR_HIRE", ["HIRE_ID", "CAR_ID", "CUST_ID", "START_DATE", "START_MILEAGE", "END_DATE", "END_MILEAGE"])]
