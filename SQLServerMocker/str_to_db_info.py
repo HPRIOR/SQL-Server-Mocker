@@ -1,20 +1,28 @@
-def table_strings(inp: str) -> [str]:
-    return [s for s in inp.split("\n")]
+from abc import ABC, abstractmethod
+
+"""
+This file defines a group of classes that handle input into the GUI. e.g. DKMString takes a specific format of string
+and converts is into a list of dictionaries containing: {table} -> {rows}. This is returned through the table list 
+method
+"""
+
+class StrToDbInfo(ABC):
+    @abstractmethod
+    def table_list(self) -> [dict]:
+        pass
 
 
-def table_dict(t_str: str) -> dict:
-    return {
-        t_str.split(" ")[0].strip(): [s.strip() for s in t_str[t_str.find("(") + 1: t_str[1].find(")")].split(", ")]
-    }
+class DKMString(StrToDbInfo):
+    def __init__(self, db_string):
+        self.db_string = db_string
 
+    def table_strings(self, inp: str) -> [str]:
+        return [s for s in inp.split("\n")]
 
-def table_list(inp_str: str, t_dict=table_dict, t_string=table_strings) -> list:
-    return [t_dict(t_str) for t_str in t_string(inp_str)]
+    def table_dict(self, t_str: str) -> dict:
+        return {
+            t_str.split(" ")[0].strip(): [s.strip() for s in t_str[t_str.find("(") + 1: t_str[1].find(")")].split(", ")]
+        }
 
-
-t_s = "LOCATION (LOC_ID, LOC_NAME, LOC_CITY)" \
-      "\nCAR (CAR_ID, CAR_CATEGORY, CAR_MAKE, CAR_MODEL, LOC_ID)" \
-      "\nCUSTOMER (CUST_ID, CUST_NAME, CUST_CONTACT_NO)" \
-      "\nCAR_HIRE (HIRE_ID, CAR_ID, CUST_ID, START_DATE, START_MILEAGE, END_DATE, END_MILEAGE)"
-
-print(table_list(t_s))
+    def table_list(self) -> [dict]:
+        return [self.table_dict(t_str) for t_str in self.table_strings(self.db_string)]
