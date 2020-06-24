@@ -29,7 +29,12 @@ class Controller(tk.Tk):
 
         self.app_mem = ApplicationMemory()
 
-        self.frames = {StartPage.__name__: StartPage(main_frame, self), DbFrame.__name__: DbFrame(main_frame, self)}
+        self.frames = {
+            StartPage.__name__: StartPage(main_frame, self),
+            DualScreenFrame.__name__: DualScreenFrame(main_frame, self),
+        }
+        self.frames[DbFrame.__name__] = DbFrame(self.frames["DualScreenFrame"], self)
+        self.frames[DisplayFrame.__name__] = DisplayFrame(self.frames["DualScreenFrame"], self),
 
         self.show_frame("StartPage")
 
@@ -44,7 +49,8 @@ class ApplicationMemory:
         self.string_var_dict = None
         self.table_rows = None
         self.gen_dict = get_gen_dict()
-        self.dict_key_list = [key for key, value in self.gen_dict.items()]
+        self.table_names = None
+        self.gen_dict_key_list = [key for key, value in self.gen_dict.items()]
 
 
 class StartPage(tk.Frame):
@@ -67,42 +73,118 @@ class StartPage(tk.Frame):
         try:
             table_tup_list = DKMString(self.content_entry.get(1.0, "end").strip('\n')).table_list()
             controller.app_mem.string_var_dict = get_str_var_dict(table_tup_list)
+            controller.app_mem.table_names = [key for key, value in controller.app_mem.string_var_dict.items()]
             self.create_table_frames(table_tup_list, controller)
-            controller.show_frame("DbFrame")
+            controller.show_frame("DualScreenFrame")
         except(IndexError):
             pass
             # show error message
 
     def create_table_frames(self, tables, controller):
+        row = 1
         for table, columns in tables:
-            controller.frames[table] = TableFrame(controller.frames["DbFrame"], controller)
+            controller.frames[table] = TableFrame(controller.frames["DbFrame"], controller, table)
             for col in columns:
-                controller.frames[col] = ColumnFrame(controller.frames[table], controller, col)
+                controller.frames[col] = [
+                    ColumnLabelFrame(
+                        parent=controller.frames[table],
+                        controller=controller,
+                        row=row,
+                        column=1,
+                        label=col
+                    ),
+                    ColumnPkOptionFrame(
+                        parent=controller.frames[table],
+                        controller=controller,
+                        row=row,
+                        column=2,
+                        string_var=controller.app_mem.string_var_dict[table][col][0]
+                    ),
+                    ColumnFkOptionFrame(
+                        parent=controller.frames[table],
+                        controller=controller,
+                        row=row,
+                        column=3,
+                        string_var=controller.app_mem.string_var_dict[table][col][1]
+                    ),
+                    ColumnTypeOptionFrame(
+                        parent=controller.frames[table],
+                        controller=controller,
+                        row=row,
+                        column=4,
+                        string_var=controller.app_mem.string_var_dict[table][col][2]
+                    )
+                ]
+                row += 1
 
 
 class ColumnFrame(tk.Frame):
-    row = 0
+    """Column frames inherit from this: use to change grid parameters"""
 
-    def __init__(self, parent, controller, label):
+    def __init__(self, parent, controller, row, column):
         tk.Frame.__init__(self, parent)
-        self.grid(row=self.row, column=0, sticky="nsew")
-        ColumnFrame.row += 1
-        self.label = label
+        self.grid(row=row, column=column, sticky='nesw')
+
+
+class ColumnLabelFrame(ColumnFrame):
+    def __init__(self, parent, controller, row, column, label):
+        ColumnFrame.__init__(self, parent, controller, row, column)
+        self.column_label = tk.Label(self, text=label + ": ")
+        self.column_label.pack()
+
+
+class ColumnPkOptionFrame(ColumnFrame):
+    def __init__(self, parent, controller, row, column, string_var):
+        ColumnFrame.__init__(self, parent, controller, row, column)
+        pk_option = tk.OptionMenu(self, string_var, "True", "False")
+        pk_option.pack()
+
+
+class ColumnFkOptionFrame(ColumnFrame):
+    def __init__(self, parent, controller, row, column, string_var):
+        ColumnFrame.__init__(self, parent, controller, row, column)
+        fk_option = tk.OptionMenu(self, string_var, *controller.app_mem.table_names)
+        fk_option.pack()
+
+
+class ColumnTypeOptionFrame(ColumnFrame):
+    def __init__(self, parent, controller, row, column, string_var):
+        ColumnFrame.__init__(self, parent, controller, row, column)
+        fk_option = tk.OptionMenu(self, string_var, *controller.app_mem.gen_dict_key_list)
+        fk_option.pack()
 
 
 class TableFrame(tk.Frame):
     row = 0
 
-    def __init__(self, parent, controller):
+    def __init__(self, parent, controller, label):
         tk.Frame.__init__(self, parent)
-        self.grid(row=self.row, column=0, sticky="nsew")
+        self.grid(row=self.row, column=0, sticky="nsew", pady=10, padx=20)
         TableFrame.row += 1
+        lb = tk.Label(self, text=label)
+        lb.grid(column=0, row=0)
 
 
 class DbFrame(tk.Frame):
     def __init__(self, parent, controller):
-        tk.Frame.__init__(self, parent)
+        tk.Frame.__init__(self, parent, bg="grey")
         self.grid(row=0, column=0, sticky="nsew")
+
+
+class DisplayFrame(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, bg="grey")
+        self.grid(row=0, column=1, sticky="nsew")
+
+
+class DualScreenFrame(tk.Frame):
+    def __init__(self, parent, controller):
+        tk.Frame.__init__(self, parent, bg="grey")
+        self.grid(row=0, column=0, sticky="nsew")
+
+    def display_text(self, text):
+        label = tk.Label(self, text=text)
+        label.pack()
 
 
 app = Controller()
