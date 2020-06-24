@@ -1,11 +1,13 @@
 import tkinter as tk
+from SQLServerMocker.str_to_db_info import DKMString
+from SQLServerMocker.generators import get_gen_dict
 
 
-def create_2D_dict(self, l: list):
+def get_str_var_dict(tuple_list: list):
     """argument = [(table, [columns]),...]
     returns: dict: {table} -> {column} -> {pk, fk, type}"""
     table_dict = {}
-    for tup in l:
+    for tup in tuple_list:
         column_dict = {}
         for col in tup[1]:
             column_dict[col] = [tk.StringVar(), tk.StringVar(), tk.StringVar()]
@@ -13,6 +15,7 @@ def create_2D_dict(self, l: list):
             column_dict[col][1].set("None")
             column_dict[col][2].set("string")
         table_dict[tup[0]] = column_dict
+    return table_dict
 
 
 class Controller(tk.Tk):
@@ -38,7 +41,10 @@ class Controller(tk.Tk):
 class ApplicationMemory:
     def __init__(self):
         self.init_string = None
-        self.string_var_dict = {}
+        self.string_var_dict = None
+        self.table_rows = None
+        self.gen_dict = get_gen_dict()
+        self.dict_key_list = [key for key, value in self.gen_dict.items()]
 
 
 class StartPage(tk.Frame):
@@ -58,34 +64,45 @@ class StartPage(tk.Frame):
         enter_str_button.pack()
 
     def process_content(self, controller):
-        controller.app_mem.init_string = self.content_entry.get(1.0, "end")
-        print(controller.app_mem.init_string)
-        # this will create a frame based on input and add it to the frame dictionary
-        # and also make the controller call this frame
+        try:
+            table_tup_list = DKMString(self.content_entry.get(1.0, "end").strip('\n')).table_list()
+            controller.app_mem.string_var_dict = get_str_var_dict(table_tup_list)
+            self.create_table_frames(table_tup_list, controller)
+            controller.show_frame("DbFrame")
+        except(IndexError):
+            pass
+            # show error message
+
+    def create_table_frames(self, tables, controller):
+        for table, columns in tables:
+            controller.frames[table] = TableFrame(controller.frames["DbFrame"], controller)
+            for col in columns:
+                controller.frames[col] = ColumnFrame(controller.frames[table], controller, col)
 
 
 class ColumnFrame(tk.Frame):
-    column = 0
+    row = 0
 
-    def __init__(self, parent):
+    def __init__(self, parent, controller, label):
         tk.Frame.__init__(self, parent)
-        self.grid(row=0, column=self.column, sticky="nsew")
-        self.column += 1
+        self.grid(row=self.row, column=0, sticky="nsew")
+        ColumnFrame.row += 1
+        self.label = label
 
 
 class TableFrame(tk.Frame):
-    column = 0
+    row = 0
 
-    def __init__(self, parent):
+    def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
-        self.grid(row=0, column=self.column, sticky="nsew")
-        self.column += 1
+        self.grid(row=self.row, column=0, sticky="nsew")
+        TableFrame.row += 1
+
 
 class DbFrame(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent)
         self.grid(row=0, column=0, sticky="nsew")
-
 
 
 app = Controller()
