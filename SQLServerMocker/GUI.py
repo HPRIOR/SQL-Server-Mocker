@@ -74,6 +74,7 @@ class StartPage(tk.Frame):
             table_tup_list = DKMString(self.content_entry.get(1.0, "end").strip('\n')).table_list()
             controller.app_mem.string_var_dict = get_str_var_dict(table_tup_list)
             controller.app_mem.table_names = [key for key, value in controller.app_mem.string_var_dict.items()]
+            controller.app_mem.table_rows = [tk.StringVar() for table in controller.app_mem.table_names]
             self.create_table_frames(table_tup_list, controller)
             controller.show_frame("DualScreenFrame")
         except(IndexError):
@@ -160,9 +161,14 @@ class TableFrame(tk.Frame):
     def __init__(self, parent, controller, label):
         tk.Frame.__init__(self, parent)
         self.grid(row=self.row, column=0, sticky="nsew", pady=10, padx=20)
+        row_num_imp = tk.Entry(self, textvariable=controller.app_mem.table_rows[TableFrame.row])
+        row_num_imp.grid(column=3, row=0)
+        num_row_label = tk.Label(self, text="number of rows: ")
+        num_row_label.grid(column=2, row=0)
         TableFrame.row += 1
-        lb = tk.Label(self, text=label)
-        lb.grid(column=0, row=0)
+        table_label = tk.Label(self, text=label)
+        table_label.grid(column=0, row=0)
+
 
 
 class DbFrame(tk.Frame):
