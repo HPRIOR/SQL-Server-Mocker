@@ -6,6 +6,7 @@ and converts is into a list of dictionaries containing: {table} -> {rows}. This 
 method
 """
 
+
 class StrToDbInfo(ABC):
     @abstractmethod
     def table_list(self) -> [dict]:
@@ -26,5 +27,3 @@ class DKMString(StrToDbInfo):
 
     def table_list(self) -> [dict]:
         return [self.table_dict(t_str) for t_str in self.table_strings(self.db_string)]
-
-

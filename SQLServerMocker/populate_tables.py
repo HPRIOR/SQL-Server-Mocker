@@ -14,7 +14,7 @@ class PopulateTables:
         self.ref_dict = self.populate_ref_dict(self.tables, self.fk_references(self.tables, self.has_fk),
                                                self.get_generator)
 
-    def db_string_builder(self) -> str:
+    def string_builder(self) -> str:
         """applies table_string_builder to each table and concatenates the resulting string"""
         return "\n".join([self.table_string_builder(table, self.get_gen_array(table, self.ref_dict, self.get_generator),
                                                     self.db.name)
@@ -81,8 +81,8 @@ class PopulateTables:
         return has_fk
 
 
-d = CreateDataBase(get_json("..\json_tables\\test_foreign_key.json")).get_db()
+# d = CreateDataBase(get_json("..\json_tables\\test_foreign_key.json")).get_db()
+#
+# p = PopulateTables(d)
 
-p = PopulateTables(d)
 
-print(p.db_string_builder())

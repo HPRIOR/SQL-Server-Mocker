@@ -53,6 +53,6 @@ class CreateTable:
         return sorted_tables
 
 
-c = CreateTable(CreateDataBase(get_json("..\json_tables\\test_table.json")).get_db())
-
-print(c.string_builder())
+# c = CreateTable(CreateDataBase(get_json("..\json_tables\\test_table.json")).get_db())
+#
+# print(c.string_builder())
