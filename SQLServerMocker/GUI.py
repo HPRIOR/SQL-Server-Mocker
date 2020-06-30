@@ -24,12 +24,11 @@ def get_str_var_dict(tuple_list: list):
 class ApplicationMemory:
     """Contains data shared by various classes in the app"""
     app_mem: dict = {
-        "init_string": None,
         "db_name": None,
         "string_var_dict": None,
         "table_rows": None,
         "gen_dict": get_gen_dict(),
-        "table_names": None,
+        "table_names": None
     }
 
 
@@ -229,7 +228,7 @@ class StartFrame(tk.Frame):
                               "LOCATION (LOC_ID, LOC_NAME, LOC_CITY)\n"
                               "CAR (CAR_ID, CAR_CATEGORY, CAR_MAKE, CAR_MODEL, LOC_ID)\n"
                               "CUSTOMER (CUST_ID, CUST_NAME, CUST_CONTACT_NO)")
-        content_entry = tk.Text(self, textvariable=main_controller.app_mem["init_string"])
+        content_entry = tk.Text(self)
         enter_str_button = tk.Button(self, text="Enter",
                                      command=lambda: start_p_controller.process_start_frame_input(main_controller,
                                                                                                   content_entry))
