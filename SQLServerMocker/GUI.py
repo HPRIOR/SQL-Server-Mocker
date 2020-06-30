@@ -22,6 +22,7 @@ def get_str_var_dict(tuple_list: list):
 
 
 class ApplicationMemory:
+    """Contains data shared by various classes in the app"""
     app_mem: dict = {
         "init_string": None,
         "db_name": None,
@@ -29,11 +30,12 @@ class ApplicationMemory:
         "table_rows": None,
         "gen_dict": get_gen_dict(),
         "table_names": None,
-
     }
 
 
 class MainController(tk.Tk):
+    """Contains the main window its frames"""
+
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
 
@@ -83,6 +85,8 @@ class MainController(tk.Tk):
 
 
 class StartPageController:
+    """Contains required to process input strings from the start page"""
+
     def process_start_frame_input(self, main_controller, content_entry):
         try:
             table_tup_list = DKMString(content_entry.get(1.0, "end").strip('\n')).table_list()
@@ -90,7 +94,8 @@ class StartPageController:
             main_controller.app_mem["table_names"] = [key for key, value in
                                                       main_controller.app_mem["string_var_dict"].items()]
             main_controller.app_mem["table_names"].append("None")
-            main_controller.app_mem["table_rows"] = [tk.StringVar() for table in main_controller.app_mem["table_names"] if table != "None"]
+            main_controller.app_mem["table_rows"] = [tk.StringVar() for table in main_controller.app_mem["table_names"]
+                                                     if table != "None"]
             for string_var in main_controller.app_mem["table_rows"]:
                 string_var.set("10")
             self.create_table_frames(table_tup_list, main_controller)
@@ -153,6 +158,8 @@ class StartPageController:
 
 
 class CreateDBDict:
+    """creates dictionary which can be passed into the backend to produce correct strings"""
+
     def __init__(self, app_mem: dict):
         self.app_mem = app_mem
 
@@ -181,15 +188,14 @@ class CreateDBDict:
                 "primary_key": string_vars[0].get() == "True",
                 "foreign_key": string_vars[1].get(),
                 "data_type": string_vars[2].get(),
-                "not_null" : True
+                "not_null": True
             })
-            print(bool(string_vars[0].get()))
         return d
 
 
-
-
 class DisplayController:
+    """gets information from the app and uses the back-end to display the result"""
+
     def __init__(self, app_mem: dict, main_controller):
         self.app_mem = app_mem
         self.main_controller = main_controller
@@ -202,16 +208,21 @@ class DisplayController:
 
 
 class DualScreenFrame(tk.Frame):
+    """contains frames for input and display sides of the program"""
+
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg="grey")
         self.grid(row=0, column=0, sticky="nsew")
 
 
 class StartFrame(tk.Frame):
+    """contains input and buttons at the start of the program"""
+
     def __init__(self, parent, main_controller, start_p_controller):
         tk.Frame.__init__(self, parent)
         self.grid(row=0, column=0, sticky="nsew")
 
+        # move the test into the actual input
         label = tk.Label(self,
                          text="Enter a database schema. "
                               "For example:\n \n"
@@ -229,7 +240,8 @@ class StartFrame(tk.Frame):
 
 
 class ColumnFrame(tk.Frame):
-    """Column frames inherit from this: use to change grid parameters"""
+    """Column frames inherit from this: use to change grid parameters
+    contains frames for column input"""
 
     def __init__(self, parent, controller, row, column):
         tk.Frame.__init__(self, parent)
@@ -265,13 +277,14 @@ class ColumnTypeOptionFrame(ColumnFrame):
 
 
 class TableFrame(tk.Frame):
+    """contains table information and column frames"""
     row = 1
 
     def __init__(self, parent, controller, label):
         tk.Frame.__init__(self, parent)
         self.grid(row=self.row, column=0, sticky="nsew", pady=10, padx=20)
 
-        row_num_imp = tk.Entry(self, textvariable=controller.app_mem["table_rows"][TableFrame.row-1])
+        row_num_imp = tk.Entry(self, textvariable=controller.app_mem["table_rows"][TableFrame.row - 1])
         num_row_label = tk.Label(self, text="number of rows: ")
         table_label = tk.Label(self, text=label)
 
@@ -283,6 +296,8 @@ class TableFrame(tk.Frame):
 
 
 class DbFrame(tk.Frame):
+    """contains table frames"""
+
     def __init__(self, parent, controller):
         tk.Frame.__init__(self, parent, bg="grey")
         self.grid(row=0, column=0, sticky="nsew")
@@ -294,7 +309,6 @@ class DbFrame(tk.Frame):
         input_frame.grid(row=0, column=0)
         db_name_inp.grid(column=1, row=0)
         db_name_label.grid(column=0, row=0)
-
 
 
 class DisplayFrame(tk.Frame):
